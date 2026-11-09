@@ -68,7 +68,7 @@ export default function RegisterForm() {
             placeholder="Enter your name"
             {...register("name")}
           />
-          <FieldError>{errors.email?.message}</FieldError>
+          <FieldError>{errors.name?.message}</FieldError>
         </TextField>
 
         <TextField
