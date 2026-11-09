@@ -2,6 +2,9 @@ import { buttonVariants } from "@heroui/styles";
 import Link from "next/link";
 import { Gi3dHammer } from "react-icons/gi";
 import NavLink from "./NavLink";
+import { getCurrentUser } from "@/lib/auth";
+import UserMenu from "./UserMenu";
+import { Suspense } from "react";
 
 const navLinks = [
   { href: "/members", label: "Matches" },
@@ -27,20 +30,32 @@ export default function NavBar() {
           ))}
         </nav>
         <div className="flex gap-3 items-center">
-          <Link
-            href={"/login"}
-            className={buttonVariants({ variant: "primary" })}
-          >
-            Login
-          </Link>
-          <Link
-            href={"/register"}
-            className={buttonVariants({ variant: "secondary" })}
-          >
-            Register
-          </Link>
+          <Suspense fallback={<GuestActions />}>
+            <AuthNavActions />
+          </Suspense>
         </div>
       </div>
     </header>
+  );
+}
+
+async function AuthNavActions() {
+  const user = await getCurrentUser();
+  return user ? <UserMenu user={user} /> : <GuestActions />;
+}
+
+function GuestActions() {
+  return (
+    <>
+      <Link href="/login" className={buttonVariants({ variant: "primary" })}>
+        Login
+      </Link>
+      <Link
+        href="/register"
+        className={buttonVariants({ variant: "secondary" })}
+      >
+        Register
+      </Link>
+    </>
   );
 }
